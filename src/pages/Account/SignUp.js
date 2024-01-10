@@ -99,11 +99,26 @@ const SignUp = () => {
       lastName
     ) {
       const payload = {
+        userId: 0,
         firstName,
         lastName,
         email,
         mobileNumber: phone,
         password,
+        roles: [
+          {
+            "roleId": 102,
+            "roleName": "USER"
+          }
+        ],
+        address: {
+          street: "strin13g",
+          buildingName: "string",
+          city: "string",
+          state: "string",
+          country: "string",
+          pincode: "string"
+        }
       };
       try {
         const response = await fetch("http://localhost:8080/api/register", {
@@ -115,11 +130,15 @@ const SignUp = () => {
         });
 
         const result = await response.json();
-        dispatch(loginSuccess({ token: result.token, email }))
-        toast.success("Account created")
-        navigate('/')
+        if (result.token) {
+          dispatch(loginSuccess({ token: result.token, userDetail: result.user }))
+          toast.success("Account created")
+          navigate('/')
+        }
+        else {
+          toast.error(result.message)
+        }
       } catch (error) {
-        toast.error(error)
       }
     }
 
@@ -220,6 +239,26 @@ const SignUp = () => {
                 )}
               </div>
 
+              {/* Last name */}
+              <div className="flex flex-col gap-.5">
+                <p className="font-titleFont text-base font-semibold text-gray-600">
+                  Last name
+                </p>
+                <input
+                  onChange={handleChangeLastName}
+                  value={lastName}
+                  className="w-full h-8 placeholder:text-sm placeholder:tracking-wide px-4 text-base font-medium placeholder:font-normal rounded-md border-[1px] border-gray-400 outline-none"
+                  type="text"
+                  placeholder="Last name"
+                />
+                {errorLastName && (
+                  <p className="text-sm text-red-500 font-titleFont font-semibold px-4">
+                    <span className="font-bold italic mr-1">!</span>
+                    {errorLastName}
+                  </p>
+                )}
+              </div>
+
               {/* Email */}
               <div className="flex flex-col gap-.5">
                 <p className="font-titleFont text-base font-semibold text-gray-600">
@@ -248,7 +287,7 @@ const SignUp = () => {
                   onChange={handlePhone}
                   value={phone}
                   className="w-full h-8 placeholder:text-sm placeholder:tracking-wide px-4 text-base font-medium placeholder:font-normal rounded-md border-[1px] border-gray-400 outline-none"
-                  type="text"
+                  type="number"
                   placeholder="008801234567891"
                 />
                 {errPhone && (
@@ -296,25 +335,7 @@ const SignUp = () => {
                   </p>
                 )}
               </div>
-              {/* City */}
-              <div className="flex flex-col gap-.5">
-                <p className="font-titleFont text-base font-semibold text-gray-600">
-                  City
-                </p>
-                <input
-                  onChange={handleChangeLastName}
-                  value={lastName}
-                  className="w-full h-8 placeholder:text-sm placeholder:tracking-wide px-4 text-base font-medium placeholder:font-normal rounded-md border-[1px] border-gray-400 outline-none"
-                  type="text"
-                  placeholder="Last name"
-                />
-                {errorLastName && (
-                  <p className="text-sm text-red-500 font-titleFont font-semibold px-4">
-                    <span className="font-bold italic mr-1">!</span>
-                    {errorLastName}
-                  </p>
-                )}
-              </div>
+              
 
               <button
                 onClick={handleSignUp}

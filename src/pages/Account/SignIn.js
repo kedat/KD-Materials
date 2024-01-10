@@ -5,6 +5,7 @@ import { logoLight } from "../../assets/images";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../../redux/orebiSlice";
 import { toast } from "react-toastify";
+import { HOST } from "../../constants";
 
 const SignIn = () => {
   // ============= Initial State Start here =============
@@ -46,7 +47,7 @@ const SignIn = () => {
         password: password,
       };
       try {
-        const response = await fetch("http://localhost:8080/api/login", {
+        const response = await fetch(`${HOST}login`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -55,8 +56,9 @@ const SignIn = () => {
         });
 
         const result = await response.json();
-        dispatch(loginSuccess({ token: result.token, email }))
+        dispatch(loginSuccess({ token: result.token, userDetail: result.user }))
         navigate('/')
+        toast.success("Signed in")
 
       } catch (error) {
         toast.error(error)

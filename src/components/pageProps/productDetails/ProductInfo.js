@@ -1,9 +1,53 @@
-import React from "react";
-import { useDispatch } from "react-redux";
-import { addToCart } from "../../../redux/orebiSlice";
+import React, { useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart, updateCart } from "../../../redux/orebiSlice";
+import { HOST } from "../../../constants";
+import { toast } from "react-toastify";
 
 const ProductInfo = ({ productInfo }) => {
   const dispatch = useDispatch();
+  const { userDetail, token } = useSelector((state) => state.orebiReducer.userInfo);
+
+  const handleClickAddToCart = useCallback(async () => {
+    if (userDetail?.cart) {
+
+      try {
+        const response = await fetch(`${HOST}public/carts/${userDetail?.cart?.cartId}/products/${productInfo._id}/quantity/1`, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        const result = await response.json();
+        if (result.status === false) {
+          toast.error(result.message)
+        } else {
+          dispatch(
+            addToCart({
+              productId: productInfo._id,
+              productName: productInfo.productName,
+              image: productInfo.img,
+              description: productInfo.des,
+              quantity: 1,
+              price: productInfo.price,
+            })
+          )
+          const response = await fetch(`${HOST}public/users/${userDetail?.email}/carts/${userDetail?.cart.cartId}`, {
+            method: "GET",
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          const result = await response.json();
+          await dispatch(updateCart(result?.products))
+          toast.success("Added to card")
+        }
+
+      } catch (error) {
+        toast.error(error)
+      }
+    }
+    else {
+      toast.error("You have to log in first!")
+    }
+  }, [dispatch, productInfo._id, productInfo.des, productInfo.img, productInfo.price, productInfo.productName, token, userDetail?.cart, userDetail?.email])
   return (
     <div className="flex flex-col gap-5">
       <h2 className="text-4xl font-semibold">{productInfo.productName}</h2>
@@ -14,19 +58,8 @@ const ProductInfo = ({ productInfo }) => {
         <span className="font-normal">Colors:</span> {productInfo.color}
       </p>
       <button
-        onClick={() =>
-          dispatch(
-            addToCart({
-              _id: productInfo.id,
-              name: productInfo.productName,
-              quantity: 1,
-              image: productInfo.img,
-              badge: productInfo.badge,
-              price: productInfo.price,
-              colors: productInfo.color,
-            })
-          )
-        }
+        onClick={handleClickAddToCart}
+
         className="w-full py-4 bg-primeColor hover:bg-black duration-300 text-white text-lg font-titleFont"
       >
         Add to Cart

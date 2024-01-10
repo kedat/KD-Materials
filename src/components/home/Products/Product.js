@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { BsSuitHeartFill } from "react-icons/bs";
 import { GiReturnArrow } from "react-icons/gi";
 import { FaShoppingCart } from "react-icons/fa";
@@ -6,12 +6,15 @@ import { MdOutlineLabelImportant } from "react-icons/md";
 import Image from "../../designLayouts/Image";
 import Badge from "./Badge";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { addToCart } from "../../../redux/orebiSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { HOST } from "../../../constants";
+import { addToCart, updateCart } from "../../../redux/orebiSlice";
 
 const Product = (props) => {
-  const dispatch = useDispatch();
+  const { userDetail, token } = useSelector((state) => state.orebiReducer.userInfo);
   const _id = props.productName;
+  const dispatch = useDispatch()
   const idString = (_id) => {
     return String(_id).toLowerCase().split(" ").join("");
   };
@@ -26,6 +29,47 @@ const Product = (props) => {
       },
     });
   };
+
+  const handleClickAddToCart = useCallback(async () => {
+    if (userDetail?.cart) {
+
+      try {
+        const response = await fetch(`${HOST}public/carts/${userDetail?.cart?.cartId}/products/${props._id}/quantity/1`, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        const result = await response.json();
+        if (result.status === false) {
+          toast.error(result.message)
+        } else {
+          dispatch(
+            addToCart({
+              productId: productItem._id,
+              productName: productItem.productName,
+              image: productItem.img,
+              description: productItem.des,
+              quantity: 1,
+              price: productItem.price,
+            })
+          )
+          const response = await fetch(`${HOST}public/users/${userDetail?.email}/carts/${userDetail?.cart.cartId}`, {
+            method: "GET",
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          const result = await response.json();
+          await dispatch(updateCart(result?.products))
+          toast.success("Added to card")
+        }
+
+      } catch (error) {
+        toast.error(error)
+      }
+    }
+    else {
+      toast.error("You have to log in ")
+    }
+  }, [dispatch, productItem._id, productItem.des, productItem.img, productItem.price, productItem.productName, props._id, token, userDetail?.cart, userDetail?.email])
   return (
     <div className="w-full relative group">
       <div className="max-w-80 max-h-80 relative overflow-y-hidden ">
@@ -44,19 +88,7 @@ const Product = (props) => {
               </span>
             </li>
             <li
-              onClick={() =>
-                dispatch(
-                  addToCart({
-                    _id: props._id,
-                    name: props.productName,
-                    quantity: 1,
-                    image: props.img,
-                    badge: props.badge,
-                    price: props.price,
-                    colors: props.color,
-                  })
-                )
-              }
+              onClick={handleClickAddToCart}
               className="text-[#767676] hover:text-primeColor text-sm font-normal border-b-[1px] border-b-gray-200 hover:border-b-primeColor flex items-center justify-end gap-2 hover:cursor-pointer pb-1 duration-300 w-full"
             >
               Add to Cart

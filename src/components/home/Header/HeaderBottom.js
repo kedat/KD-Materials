@@ -11,7 +11,7 @@ import { logout } from "../../../redux/orebiSlice";
 import { toast } from "react-toastify";
 
 const HeaderBottom = () => {
-  const userEmail = useSelector((state) => state.orebiReducer.userInfo.email);
+  const { userDetail } = useSelector((state) => state.orebiReducer.userInfo);
   const products = useSelector((state) => state.orebiReducer.products);
   const navigate = useNavigate();
   const dispatch = useDispatch()
@@ -43,14 +43,15 @@ const HeaderBottom = () => {
   }, [searchQuery]);
 
   const handleClickAccount = useCallback(async () => {
-    if (isEmpty(userEmail)) {
+    if (isEmpty(userDetail)) {
       navigate('/signin')
     }
     else {
       await dispatch(logout())
       toast.success("Logged out")
+      navigate('/signin')
     }
-  }, [dispatch, navigate, userEmail])
+  }, [dispatch, navigate, userDetail])
 
   return (
     <div className="w-full bg-[#F5F5F3] relative">
@@ -158,8 +159,7 @@ const HeaderBottom = () => {
               >
                 <Link onClick={handleClickAccount}>
                   <li className="text-gray-400 px-4 py-1 border-b-[1px] border-b-gray-400 hover:border-b-white hover:text-white duration-300 cursor-pointer">
-                    {isEmpty(userEmail) ? 'Login' : 'Logout'}
-
+                    {isEmpty(userDetail) ? 'Login' : 'Logout'}
                   </li>
                 </Link>
 
@@ -171,9 +171,9 @@ const HeaderBottom = () => {
                 <li className="text-gray-400 px-4 py-1 border-b-[1px] border-b-gray-400 hover:border-b-white hover:text-white duration-300 cursor-pointer">
                   Profile
                 </li>
-                {!isEmpty(userEmail) ?
+                {!isEmpty(userDetail) ?
                   <li className="text-gray-400 px-4 py-1 border-b-[1px] border-b-gray-400  hover:border-b-white hover:text-white duration-300 cursor-pointer">
-                    {userEmail}
+                    {userDetail.lastName}
                   </li> : null}
               </motion.ul>
             )}
@@ -181,7 +181,7 @@ const HeaderBottom = () => {
               <div className="relative">
                 <FaShoppingCart />
                 <span className="absolute font-titleFont top-3 -right-2 text-xs w-4 h-4 flex items-center justify-center rounded-full bg-primeColor text-white">
-                  {products.length > 0 ? products.length : 0}
+                  {!isEmpty(products) && products.length > 0 ? products.length : 0}
                 </span>
               </div>
             </Link>
