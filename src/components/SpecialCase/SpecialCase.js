@@ -1,12 +1,12 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { RiShoppingCart2Fill } from "react-icons/ri";
+import { isEmpty } from "lodash";
+import React, { useCallback, useEffect } from "react";
 import { MdSwitchAccount } from "react-icons/md";
+import { RiShoppingCart2Fill } from "react-icons/ri";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import { HOST } from "../../constants";
 import { updateCart } from "../../redux/orebiSlice";
-import { toast } from "react-toastify";
-import { isEmpty } from "lodash";
 
 const SpecialCase = () => {
 
@@ -14,7 +14,6 @@ const SpecialCase = () => {
   const prod = useSelector((state) => state.orebiReducer.products);
 
 
-  const [products, setProducts] = useState([])
   const dispatch = useDispatch()
   const getCartItems = useCallback(async () => {
     if (userDetail?.cart) {
@@ -25,7 +24,6 @@ const SpecialCase = () => {
           headers: { Authorization: `Bearer ${token}` }
         });
         const result = await response.json();
-        setProducts(result?.products)
         await dispatch(updateCart(result?.products))
       } catch (error) {
         toast.error(error)
@@ -39,18 +37,17 @@ const SpecialCase = () => {
 
   return (
     <div className="fixed top-52 right-2 z-20 hidden md:flex flex-col gap-2">
-      <Link to="/signin">
-        <div className="bg-white w-16 h-[70px] rounded-md flex flex-col gap-1 text-[#33475b] justify-center items-center shadow-testShadow overflow-x-hidden group cursor-pointer">
+      <Link to="/my-orders">
+        <div className="bg-white w-20 h-[70px] rounded-md flex flex-col gap-1 text-[#33475b] justify-center items-center shadow-testShadow overflow-x-hidden group cursor-pointer">
           <div className="flex justify-center items-center">
             <MdSwitchAccount className="text-2xl -translate-x-12 group-hover:translate-x-3 transition-transform duration-200" />
-
             <MdSwitchAccount className="text-2xl -translate-x-3 group-hover:translate-x-12 transition-transform duration-200" />
           </div>
-          <p className="text-xs font-semibold font-titleFont">Profile</p>
+          <p className="text-xs font-semibold font-titleFont">My Orders</p>
         </div>
       </Link>
       <Link to="/cart">
-        <div className="bg-white w-16 h-[70px] rounded-md flex flex-col gap-1 text-[#33475b] justify-center items-center shadow-testShadow overflow-x-hidden group cursor-pointer relative">
+        <div className="bg-white w-20 h-[70px] rounded-md flex flex-col gap-1 text-[#33475b] justify-center items-center shadow-testShadow overflow-x-hidden group cursor-pointer relative">
           <div className="flex justify-center items-center">
             <RiShoppingCart2Fill className="text-2xl -translate-x-12 group-hover:translate-x-3 transition-transform duration-200" />
 

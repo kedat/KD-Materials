@@ -22,6 +22,7 @@ import Offer from "./pages/Offer/Offer";
 import ProductDetails from "./pages/ProductDetails/ProductDetails";
 import Shop from "./pages/Shop/Shop";
 import Payment from "./pages/payment/Payment";
+import MyOrders from "./pages/MyOrders/MyOrders";
 
 const Layout = () => {
   return (
@@ -52,6 +53,7 @@ const router = createBrowserRouter(
         <Route path="/product/:_id" element={<ProductDetails />}></Route>
         <Route path="/cart" element={<Cart />}></Route>
         <Route path="/paymentgateway" element={<Payment />}></Route>
+        <Route path="/my-orders" element={<MyOrders />}></Route>
       </Route>
       <Route path="/signup" element={<SignUp />}></Route>
       <Route path="/signin" element={<SignIn />}></Route>

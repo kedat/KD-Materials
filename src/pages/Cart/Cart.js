@@ -9,14 +9,15 @@ import ItemCard from "./ItemCard";
 import { HOST } from "../../constants";
 import { toast } from "react-toastify";
 import { isEmpty } from "lodash";
+import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate()
   const { userDetail, token } = useSelector((state) => state.orebiReducer.userInfo);
 
   const [products, setProducts] = useState([])
   const [totalAmt, setTotalAmt] = useState("");
-  const [shippingCharge, setShippingCharge] = useState("");
   const getCartItems = useCallback(async () => {
     if (userDetail?.cart) {
 
@@ -29,10 +30,8 @@ const Cart = () => {
           const result = await response.json();
           dispatch(updateCart(result?.products))
           setProducts(result?.products)
-
         }
         else {
-
           dispatch(updateCart([]))
         }
       } catch (error) {
@@ -61,19 +60,9 @@ const Cart = () => {
   }, [products]);
 
 
-  useEffect(() => {
-    if (totalAmt <= 200) {
-      setShippingCharge(30);
-    } else if (totalAmt <= 400) {
-      setShippingCharge(25);
-    } else if (totalAmt > 401) {
-      setShippingCharge(20);
-    }
-  }, [totalAmt]);
-
-  const checkout = useCallback(async () => {
+  const handleClickCheckout = useCallback(async () => {
     try {
-      const response = await fetch(`${HOST}public/users/${userDetail?.email}/carts/${userDetail?.cart.cartId}/payments/ngon/order`, {
+      const response = await fetch(`${HOST}public/users/${userDetail?.email}/carts/${userDetail?.cart.cartId}/payments/stripe/order`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -81,11 +70,12 @@ const Cart = () => {
       setProducts([])
       await dispatch(updateCart([]))
       await dispatch(resetCart())
-      toast.success("Checkout successfully, you will pay later when receive order")
+      toast.success("Checkout successfully !")
+      navigate('/paymentgateway')
     } catch (error) {
       toast.error(error)
     }
-  }, [dispatch, token, userDetail?.cart.cartId, userDetail?.email])
+  }, [dispatch, navigate, token, userDetail?.cart.cartId, userDetail?.email])
   return (
     <div className="max-w-container mx-auto px-4">
       <Breadcrumbs title="Cart" />
@@ -138,19 +128,18 @@ const Cart = () => {
                 <p className="flex items-center justify-between border-[1px] border-gray-400 border-b-0 py-1.5 text-lg px-4 font-medium">
                   Shipping Charge
                   <span className="font-semibold tracking-wide font-titleFont">
-                    ${shippingCharge}
+
                   </span>
                 </p>
                 <p className="flex items-center justify-between border-[1px] border-gray-400 py-1.5 text-lg px-4 font-medium">
                   Total
                   <span className="font-bold tracking-wide text-lg font-titleFont">
-                    ${totalAmt + shippingCharge}
+                    ${totalAmt}
                   </span>
                 </p>
               </div>
               <div className="flex justify-end">
-
-                <button className="w-52 h-10 bg-primeColor text-white hover:bg-black duration-300" onClick={checkout}>
+                <button className="w-52 h-10 bg-primeColor text-white hover:bg-black duration-300" onClick={handleClickCheckout}>
                   Proceed to Checkout
                 </button>
 

@@ -172,6 +172,12 @@ const HeaderBottom = () => {
                   Profile
                 </li>
                 {!isEmpty(userDetail) ?
+                  <Link onClick={() => setShowUser(false)} to="/my-orders">
+                    <li className="text-gray-400 px-4 py-1 border-b-[1px] border-b-gray-400 hover:border-b-white hover:text-white duration-300 cursor-pointer">
+                      My Orders
+                    </li>
+                  </Link> : null}
+                {!isEmpty(userDetail) ?
                   <li className="text-gray-400 px-4 py-1 border-b-[1px] border-b-gray-400  hover:border-b-white hover:text-white duration-300 cursor-pointer">
                     {userDetail.lastName}
                   </li> : null}
