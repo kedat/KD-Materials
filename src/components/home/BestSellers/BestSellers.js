@@ -1,55 +1,89 @@
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Heading from "../Products/Heading";
+import { HOST } from "../../../constants";
+import { toast } from "react-toastify";
+import SampleNextArrow from "../NewArrivals/SampleNextArrow";
+import SamplePrevArrow from "../NewArrivals/SamplePrevArrow";
+import Slider from "react-slick";
+import { isEmpty, map } from "lodash";
 import Product from "../Products/Product";
-import {
-  bestSellerOne,
-  bestSellerTwo,
-  bestSellerThree,
-  bestSellerFour,
-} from "../../../assets/images/index";
-
+const settings = {
+  infinite: true,
+  speed: 500,
+  slidesToShow: 4,
+  slidesToScroll: 1,
+  nextArrow: <SampleNextArrow />,
+  prevArrow: <SamplePrevArrow />,
+  responsive: [
+    {
+      breakpoint: 1025,
+      settings: {
+        slidesToShow: 3,
+        slidesToScroll: 1,
+        infinite: true,
+      },
+    },
+    {
+      breakpoint: 769,
+      settings: {
+        slidesToShow: 2,
+        slidesToScroll: 2,
+        infinite: true,
+      },
+    },
+    {
+      breakpoint: 480,
+      settings: {
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        infinite: true,
+      },
+    },
+  ],
+};
 const BestSellers = () => {
+  const [products, setProducts] = useState([]);
+
+  const getProducts = useCallback(async () => {
+    try {
+      const response = await fetch(`${HOST}categories/2/products?pageNumber=1`, {
+        method: "GET",
+      });
+      const result = await response.json();
+      setProducts(result.content);
+    } catch (error) {
+      toast.error(error);
+    }
+  }, []);
+
+  useEffect(() => {
+    getProducts();
+  }, [getProducts]);
   return (
     <div className="w-full pb-20">
       <Heading heading="Our Bestsellers" />
-      <div className="w-full grid grid-cols-1 md:grid-cols-2 lgl:grid-cols-3 xl:grid-cols-4 gap-10">
-        <Product
-          _id="1011"
-          img={bestSellerOne}
-          productName="Flower Base"
-          price="35.00"
-          color="Blank and White"
-          badge={true}
-          des="Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic excepturi quibusdam odio deleniti reprehenderit facilis."
-        />
-        <Product
-          _id="1012"
-          img={bestSellerTwo}
-          productName="New Backpack"
-          price="180.00"
-          color="Gray"
-          badge={false}
-          des="Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic excepturi quibusdam odio deleniti reprehenderit facilis."
-        />
-        <Product
-          _id="1013"
-          img={bestSellerThree}
-          productName="Household materials"
-          price="25.00"
-          color="Mixed"
-          badge={true}
-          des="Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic excepturi quibusdam odio deleniti reprehenderit facilis."
-        />
-        <Product
-          _id="1014"
-          img={bestSellerFour}
-          productName="Travel Bag"
-          price="220.00"
-          color="Black"
-          badge={false}
-          des="Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic excepturi quibusdam odio deleniti reprehenderit facilis."
-        />
-      </div>
+      <Slider {...settings}>
+        {!isEmpty(products)
+          ? map(products, (product) => {
+            return (
+              <>
+                <div className="px-2">
+
+                  <Product
+                    _id={product.productId}
+                    img={product.image}
+                    productName={product.productName}
+                    price={product.price}
+                    color="Black"
+                    des={product.description}
+                    cat="Best"
+                  />
+                </div>
+              </>
+            );
+          })
+          : null}
+      </Slider>
     </div>
   );
 };

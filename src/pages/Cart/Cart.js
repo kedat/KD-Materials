@@ -52,7 +52,7 @@ const Cart = () => {
     let price = 0;
     if (!isEmpty(products)) {
       products.map((item) => {
-        price += item.price * item.quantity;
+        price += item.specialPrice * item.quantity;
         return price;
       });
     }

@@ -74,7 +74,9 @@ const NewArrivals = () => {
               price={product.price}
               color="Black"
               badge={true}
-              des="Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic excepturi quibusdam odio deleniti reprehenderit facilis."
+              des={product.description}
+              discount={product.discount}
+              specialPrice={product.specialPrice}
             />
           </div></>)
         }

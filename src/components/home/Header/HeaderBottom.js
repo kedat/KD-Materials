@@ -159,15 +159,16 @@ const HeaderBottom = () => {
               >
                 <Link onClick={handleClickAccount}>
                   <li className="text-gray-400 px-4 py-1 border-b-[1px] border-b-gray-400 hover:border-b-white hover:text-white duration-300 cursor-pointer">
-                    {isEmpty(userDetail) ? 'Login' : 'Logout'}
+                    {isEmpty(userDetail) ? 'Log In' : 'Log Out'}
                   </li>
                 </Link>
+                {isEmpty(userDetail) ?
+                  <Link onClick={() => setShowUser(false)} to="/signup">
+                    <li className="text-gray-400 px-4 py-1 border-b-[1px] border-b-gray-400 hover:border-b-white hover:text-white duration-300 cursor-pointer">
+                      Sign Up
+                    </li>
+                  </Link> : null}
 
-                <Link onClick={() => setShowUser(false)} to="/signup">
-                  <li className="text-gray-400 px-4 py-1 border-b-[1px] border-b-gray-400 hover:border-b-white hover:text-white duration-300 cursor-pointer">
-                    Sign Up
-                  </li>
-                </Link>
                 <li className="text-gray-400 px-4 py-1 border-b-[1px] border-b-gray-400 hover:border-b-white hover:text-white duration-300 cursor-pointer">
                   Profile
                 </li>
@@ -181,6 +182,13 @@ const HeaderBottom = () => {
                   <li className="text-gray-400 px-4 py-1 border-b-[1px] border-b-gray-400  hover:border-b-white hover:text-white duration-300 cursor-pointer">
                     {userDetail.lastName}
                   </li> : null}
+                {userDetail?.roles.length > 1 ?
+                  <Link onClick={() => setShowUser(false)} to="/admin">
+                    <li className="text-gray-400 px-4 py-1 border-b-[1px] border-b-gray-400 hover:border-b-white hover:text-white duration-300 cursor-pointer">
+                      Admin
+                    </li>
+                  </Link> : null}
+
               </motion.ul>
             )}
             <Link to="/cart">

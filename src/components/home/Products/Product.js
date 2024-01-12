@@ -13,7 +13,7 @@ import { addToCart, updateCart } from "../../../redux/orebiSlice";
 
 const Product = (props) => {
   const { userDetail, token } = useSelector((state) => state.orebiReducer.userInfo);
-  const _id = props.productName;
+  const _id = props._id;
   const dispatch = useDispatch()
   const idString = (_id) => {
     return String(_id).toLowerCase().split(" ").join("");
@@ -77,7 +77,7 @@ const Product = (props) => {
           <Image className="w-full h-full" imgSrc={props.img} />
         </div>
         <div className="absolute top-6 left-8">
-          {props.badge && <Badge text="New" />}
+          <Badge text={props.cat || "New"} />
         </div>
         <div className="w-full h-32 absolute bg-white -bottom-[130px] group-hover:bottom-0 duration-700">
           <ul className="w-full h-full flex flex-col items-end justify-center gap-2 font-titleFont px-2 border-l border-r">
@@ -119,7 +119,9 @@ const Product = (props) => {
           <h2 className="text-lg text-primeColor font-bold">
             {props.productName}
           </h2>
-          <p className="text-[#767676] text-[14px]">${props.price}</p>
+          <p>
+            <span className="text-[#767676] text-[14px] font- line-through mr-2">${props.price}</span>
+            <span className="text-[#767676] text-[14px] font-bold">${props.specialPrice}</span></p>
         </div>
         <div>
           <p className="text-[#767676] text-[14px]">{props.color}</p>

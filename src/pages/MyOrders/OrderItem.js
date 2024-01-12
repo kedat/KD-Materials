@@ -11,7 +11,7 @@ const OrderItem = ({ order, getOrders }) => {
     (state) => state.orebiReducer.userInfo
   );
   const handleClickViewOrder = useCallback(() => {
-    navigate(`/order/${order.orderId}`);
+    navigate(`/my-order/${order.orderId}`);
   }, [navigate, order.orderId]);
   const handleClickCancelOrder = useCallback(
     async (evt) => {
@@ -44,7 +44,7 @@ const OrderItem = ({ order, getOrders }) => {
         {order.orderStatus}
       </p>
       <p className="text-center font-titleFont font-bold text-lg">
-        {order.totalAmount}
+        ${order.totalAmount}
       </p>
       <p className="text-center flex justify-center items-center gap-3">
         <button onClick={handleClickViewOrder} id={order.orderId}>
@@ -55,7 +55,7 @@ const OrderItem = ({ order, getOrders }) => {
         <button
           onClick={handleClickCancelOrder}
           id={order.orderId}
-          className={`${order.orderStatus === "Order Accepted !" ? "" : "-z-10 opacity-0"
+          className={`${order.orderStatus === "Processing order !" ? "" : "-z-10 opacity-0"
             }`}
         >
           <span title="Cancel">
