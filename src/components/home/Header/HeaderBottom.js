@@ -12,9 +12,10 @@ import { toast } from "react-toastify";
 
 const HeaderBottom = () => {
   const { userDetail } = useSelector((state) => state.orebiReducer.userInfo);
+  const isAdmin = userDetail?.roles.length > 1;
   const products = useSelector((state) => state.orebiReducer.products);
   const navigate = useNavigate();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const [show, setShow] = useState(false);
   const [showUser, setShowUser] = useState(false);
   const ref = useRef();
@@ -44,14 +45,13 @@ const HeaderBottom = () => {
 
   const handleClickAccount = useCallback(async () => {
     if (isEmpty(userDetail)) {
-      navigate('/signin')
+      navigate("/signin");
+    } else {
+      await dispatch(logout());
+      toast.success("Logged out");
+      navigate("/signin");
     }
-    else {
-      await dispatch(logout())
-      toast.success("Logged out")
-      navigate('/signin')
-    }
-  }, [dispatch, navigate, userDetail])
+  }, [dispatch, navigate, userDetail]);
 
   return (
     <div className="w-full bg-[#F5F5F3] relative">
@@ -63,7 +63,7 @@ const HeaderBottom = () => {
             className="flex h-14 cursor-pointer items-center gap-2 text-primeColor"
           >
             <HiOutlineMenuAlt4 className="w-5 h-5" />
-            <p className="text-[14px] font-normal">Shop by Category</p>
+            <p className="text-[14px] font-normal">{isAdmin ? "Shop management" : "Shop by Category"}</p>
 
             {show && (
               <motion.ul
@@ -72,24 +72,51 @@ const HeaderBottom = () => {
                 transition={{ duration: 0.5 }}
                 className="absolute top-36 z-50 bg-primeColor w-auto text-[#767676] h-auto p-4 pb-6"
               >
-                <li className="text-gray-400 px-4 py-1 border-b-[1px] border-b-gray-400 hover:border-b-white hover:text-white duration-300 cursor-pointer">
-                  Accessories
-                </li>
-                <li className="text-gray-400 px-4 py-1 border-b-[1px] border-b-gray-400 hover:border-b-white hover:text-white duration-300 cursor-pointer">
-                  Furniture
-                </li>
-                <li className="text-gray-400 px-4 py-1 border-b-[1px] border-b-gray-400 hover:border-b-white hover:text-white duration-300 cursor-pointer">
-                  Electronics
-                </li>
-                <li className="text-gray-400 px-4 py-1 border-b-[1px] border-b-gray-400 hover:border-b-white hover:text-white duration-300 cursor-pointer">
-                  Clothes
-                </li>
-                <li className="text-gray-400 px-4 py-1 border-b-[1px] border-b-gray-400  hover:border-b-white hover:text-white duration-300 cursor-pointer">
-                  Bags
-                </li>
-                <li className="text-gray-400 px-4 py-1 border-b-[1px] border-b-gray-400  hover:border-b-white hover:text-white duration-300 cursor-pointer">
-                  Home appliances
-                </li>
+                {isAdmin ? (
+                  <>
+                    <li className="text-gray-400 px-4 py-1 border-b-[1px] border-b-gray-400 hover:border-b-white hover:text-white duration-300 cursor-pointer">
+                      <Link onClick={() => setShowUser(false)} to="/Admin/orders">
+                        Order
+                      </Link>
+                    </li>
+                    <li className="text-gray-400 px-4 py-1 border-b-[1px] border-b-gray-400 hover:border-b-white hover:text-white duration-300 cursor-pointer">
+                      Product
+                    </li>
+                    <li className="text-gray-400 px-4 py-1 border-b-[1px] border-b-gray-400 hover:border-b-white hover:text-white duration-300 cursor-pointer">
+                      Category
+                    </li>
+                    <li className="text-gray-400 px-4 py-1 border-b-[1px] border-b-gray-400 hover:border-b-white hover:text-white duration-300 cursor-pointer">
+                      User
+                    </li>
+                    <li className="text-gray-400 px-4 py-1 border-b-[1px] border-b-gray-400  hover:border-b-white hover:text-white duration-300 cursor-pointer">
+                      Address
+                    </li>
+                    <li className="text-gray-400 px-4 py-1 border-b-[1px] border-b-gray-400  hover:border-b-white hover:text-white duration-300 cursor-pointer">
+                      Cart
+                    </li>
+                  </>
+                ) : (
+                  <>
+                    <li className="text-gray-400 px-4 py-1 border-b-[1px] border-b-gray-400 hover:border-b-white hover:text-white duration-300 cursor-pointer">
+                      Accessories
+                    </li>
+                    <li className="text-gray-400 px-4 py-1 border-b-[1px] border-b-gray-400 hover:border-b-white hover:text-white duration-300 cursor-pointer">
+                      Furniture
+                    </li>
+                    <li className="text-gray-400 px-4 py-1 border-b-[1px] border-b-gray-400 hover:border-b-white hover:text-white duration-300 cursor-pointer">
+                      Electronics
+                    </li>
+                    <li className="text-gray-400 px-4 py-1 border-b-[1px] border-b-gray-400 hover:border-b-white hover:text-white duration-300 cursor-pointer">
+                      Clothes
+                    </li>
+                    <li className="text-gray-400 px-4 py-1 border-b-[1px] border-b-gray-400  hover:border-b-white hover:text-white duration-300 cursor-pointer">
+                      Bags
+                    </li>
+                    <li className="text-gray-400 px-4 py-1 border-b-[1px] border-b-gray-400  hover:border-b-white hover:text-white duration-300 cursor-pointer">
+                      Home appliances
+                    </li>
+                  </>
+                )}
               </motion.ul>
             )}
           </div>
@@ -120,9 +147,7 @@ const HeaderBottom = () => {
                               item: item,
                             },
                           }
-                        ) &
-
-                        setSearchQuery("")
+                        ) & setSearchQuery("")
                       }
                       key={item._id}
                       className="max-w-[600px] h-28 bg-gray-100 mb-3 flex items-center gap-3"
@@ -159,50 +184,55 @@ const HeaderBottom = () => {
               >
                 <Link onClick={handleClickAccount}>
                   <li className="text-gray-400 px-4 py-1 border-b-[1px] border-b-gray-400 hover:border-b-white hover:text-white duration-300 cursor-pointer">
-                    {isEmpty(userDetail) ? 'Log In' : 'Log Out'}
+                    {isEmpty(userDetail) ? "Log In" : "Log Out"}
                   </li>
                 </Link>
-                {isEmpty(userDetail) ?
+                {isEmpty(userDetail) ? (
                   <Link onClick={() => setShowUser(false)} to="/signup">
                     <li className="text-gray-400 px-4 py-1 border-b-[1px] border-b-gray-400 hover:border-b-white hover:text-white duration-300 cursor-pointer">
                       Sign Up
                     </li>
-                  </Link> : null}
+                  </Link>
+                ) : null}
 
                 <li className="text-gray-400 px-4 py-1 border-b-[1px] border-b-gray-400 hover:border-b-white hover:text-white duration-300 cursor-pointer">
                   Profile
                 </li>
-                {!isEmpty(userDetail) ?
+                {!isEmpty(userDetail) ? (
                   <Link onClick={() => setShowUser(false)} to="/my-orders">
                     <li className="text-gray-400 px-4 py-1 border-b-[1px] border-b-gray-400 hover:border-b-white hover:text-white duration-300 cursor-pointer">
                       My Orders
                     </li>
-                  </Link> : null}
-                {!isEmpty(userDetail) ?
+                  </Link>
+                ) : null}
+                {!isEmpty(userDetail) ? (
                   <li className="text-gray-400 px-4 py-1 border-b-[1px] border-b-gray-400  hover:border-b-white hover:text-white duration-300 cursor-pointer">
                     {userDetail.lastName}
-                  </li> : null}
-                {userDetail?.roles.length > 1 ?
+                  </li>
+                ) : null}
+                {userDetail?.roles.length > 1 ? (
                   <Link onClick={() => setShowUser(false)} to="/admin">
                     <li className="text-gray-400 px-4 py-1 border-b-[1px] border-b-gray-400 hover:border-b-white hover:text-white duration-300 cursor-pointer">
                       Admin
                     </li>
-                  </Link> : null}
-
+                  </Link>
+                ) : null}
               </motion.ul>
             )}
             <Link to="/cart">
               <div className="relative">
                 <FaShoppingCart />
                 <span className="absolute font-titleFont top-3 -right-2 text-xs w-4 h-4 flex items-center justify-center rounded-full bg-primeColor text-white">
-                  {!isEmpty(products) && products.length > 0 ? products.length : 0}
+                  {!isEmpty(products) && products.length > 0
+                    ? products.length
+                    : 0}
                 </span>
               </div>
             </Link>
           </div>
         </Flex>
-      </div >
-    </div >
+      </div>
+    </div>
   );
 };
 

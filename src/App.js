@@ -24,6 +24,7 @@ import Shop from "./pages/Shop/Shop";
 import Payment from "./pages/payment/Payment";
 import MyOrders from "./pages/MyOrders/MyOrders";
 import OrderDetail from "./pages/OederDetail/OrderDetail";
+import AdminOrder from "./pages/Admin/Orders/AdminOrder";
 
 const Layout = () => {
   return (
@@ -41,7 +42,6 @@ const Layout = () => {
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
-
       <Route path="/" element={<Layout />}>
         {/* ==================== Header Navlink Start here =================== */}
         <Route index element={<Home />}></Route>
@@ -56,6 +56,7 @@ const router = createBrowserRouter(
         <Route path="/paymentgateway" element={<Payment />}></Route>
         <Route path="/my-orders" element={<MyOrders />}></Route>
         <Route path="/my-order/:_id" element={<OrderDetail />}></Route>
+        <Route path="/Admin/orders" element={<AdminOrder />}></Route>
       </Route>
       <Route path="/signup" element={<SignUp />}></Route>
       <Route path="/signin" element={<SignIn />}></Route>

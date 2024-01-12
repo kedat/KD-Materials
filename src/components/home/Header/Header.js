@@ -96,7 +96,7 @@ const Header = () => {
                         onClick={() => setCategory(!category)}
                         className="flex justify-between text-base cursor-pointer items-center font-titleFont mb-2"
                       >
-                        Shop by Category{" "}
+                        Shop by Category
                         <span className="text-lg">{category ? "-" : "+"}</span>
                       </h1>
                       {category && (

@@ -54,14 +54,19 @@ const SignIn = () => {
           },
           body: JSON.stringify(payload),
         });
+        if (response.ok) {
+          const result = await response.json();
+          dispatch(loginSuccess({ token: result.token, userDetail: result.user }))
+          navigate('/')
+          toast.success("Signed in")
+        }
+        else {
+          toast.error("Wrong email or password")
 
-        const result = await response.json();
-        dispatch(loginSuccess({ token: result.token, userDetail: result.user }))
-        navigate('/')
-        toast.success("Signed in")
+        }
 
       } catch (error) {
-        toast.error(error)
+        toast.error(error || "Wrong email or password")
       }
 
     }

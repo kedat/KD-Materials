@@ -87,7 +87,7 @@ const Cart = () => {
             <h2>Quantity</h2>
             <h2>Sub Total</h2>
           </div>
-          <div className="mt-5">
+          <div className="mt-5 max-h-[600px] overflow-scroll">
             {products.map((item) => (
               <div key={item._id}>
                 <ItemCard item={item} getCartItems={getCartItems} />
