@@ -1,5 +1,11 @@
 import React, { useCallback } from "react";
-import { AcceptIcon, CancelIcon, DoneIcon, ProcessingIcon, ViewIcon } from "../../assets/icon";
+import {
+  AcceptIcon,
+  CancelIcon,
+  DoneIcon,
+  ProcessingIcon,
+  ViewIcon,
+} from "../../assets/icon";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { HOST } from "../../constants";
@@ -10,13 +16,13 @@ const OrderItem = ({ order, getOrders }) => {
   const { userDetail, token } = useSelector(
     (state) => state.orebiReducer.userInfo
   );
+  const isAdmin = userDetail?.roles.length > 1;
   const handleClickViewOrder = useCallback(() => {
     navigate(`/my-order/${order.orderId}`);
   }, [navigate, order.orderId]);
   const handleClickAction = useCallback(
     async (evt) => {
-      const status = evt.currentTarget.getAttribute('data-action')
-      console.log("🚀 ~ status:", status)
+      const status = evt.currentTarget.getAttribute("data-action");
       try {
         const response = await fetch(
           `${HOST}public/users/${userDetail?.email}/orders/${evt.currentTarget.id}/orderStatus/${status}`,
@@ -64,48 +70,65 @@ const OrderItem = ({ order, getOrders }) => {
         ${order.totalAmount}
       </p>
       <p className="text-center flex justify-center items-center gap-3">
-        <button onClick={handleClickViewOrder} id={order.orderId} >
+        <button onClick={handleClickViewOrder} id={order.orderId} data-email={order.email}>
           <span title="View">
             <ViewIcon />
           </span>
         </button>
-        <button
-          onClick={handleClickAction}
-          id={order.orderId}
-          data-action='accept'
-        >
-          <span title="Accept">
-            <AcceptIcon />
-          </span>
-        </button>
-        <button
-          onClick={handleClickAction}
-          id={order.orderId}
-          data-action='process'
-        >
-          <span title="Process">
-            <ProcessingIcon />
-          </span>
-        </button>
-        <button
-          onClick={handleClickAction}
-          id={order.orderId}
-          data-action='done'
-        >
-          <span title="Done">
-            <DoneIcon />
-          </span>
-        </button>
-        <button
-          onClick={handleClickAction}
-          id={order.orderId}
-
-          data-action='cancel'
-        >
-          <span title="Cancel">
-            <CancelIcon />
-          </span>
-        </button>
+        {isAdmin ? (
+          <>
+            <button
+              onClick={handleClickAction}
+              id={order.orderId}
+              data-action="accept"
+            >
+              <span title="Accept">
+                <AcceptIcon />
+              </span>
+            </button>
+            <button
+              onClick={handleClickAction}
+              id={order.orderId}
+              data-action="process"
+            >
+              <span title="Process">
+                <ProcessingIcon />
+              </span>
+            </button>
+            <button
+              onClick={handleClickAction}
+              id={order.orderId}
+              data-action="done"
+            >
+              <span title="Done">
+                <DoneIcon />
+              </span>
+            </button>
+            <button
+              onClick={handleClickAction}
+              id={order.orderId}
+              data-action="cancel"
+            >
+              <span title="Cancel">
+                <CancelIcon />
+              </span>
+            </button>
+          </>
+        ) : (
+          <>
+            <button
+              onClick={handleClickAction}
+              id={order.orderId}
+              data-action="cancel"
+              className={`${order.orderStatus === "Pending accepted !" ? "" : "hidden"
+                }`}
+            >
+              <span title="Cancel">
+                <CancelIcon />
+              </span>
+            </button>
+          </>
+        )}
       </p>
     </div>
   );

@@ -20,7 +20,6 @@ const Cart = () => {
   const [totalAmt, setTotalAmt] = useState("");
   const getCartItems = useCallback(async () => {
     if (userDetail?.cart) {
-
       try {
         const response = await fetch(`${HOST}public/users/${userDetail?.email}/carts/${userDetail?.cart.cartId}`, {
           method: "GET",
@@ -44,6 +43,7 @@ const Cart = () => {
       toast.error("You have to log in")
     }
   }, [dispatch, token, userDetail?.cart, userDetail?.email])
+
   useEffect(() => {
     getCartItems();
   }, [getCartItems]);

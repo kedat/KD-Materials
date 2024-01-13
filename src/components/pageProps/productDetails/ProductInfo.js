@@ -51,7 +51,9 @@ const ProductInfo = ({ productInfo }) => {
   return (
     <div className="flex flex-col gap-5">
       <h2 className="text-4xl font-semibold">{productInfo.productName}</h2>
-      <p className="text-xl font-semibold">${productInfo.price}</p>
+      <p>
+        <span className="text-[#767676] text-[14px] font- line-through mr-2">${productInfo.price}</span>
+        <span className="text-[#767676] text-[14px] font-bold">${productInfo.specialPrice}</span></p>
       <p className="text-base text-gray-600">{productInfo.des}</p>
       <p className="text-sm">Be the first to leave a review.</p>
       <p className="font-medium text-lg">

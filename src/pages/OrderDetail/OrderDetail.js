@@ -12,11 +12,14 @@ const OrderDetail = () => {
   const { userDetail, token } = useSelector((state) => state.orebiReducer.userInfo);
   const { pathname } = useLocation();
   const orderId = pathname.split('/')[2];
+  const isAdmin = userDetail?.roles.length > 1;
+
 
   const [orderDetail, setOrderDetail] = useState([])
   const getOrderDetail = useCallback(async () => {
     try {
-      const response = await fetch(`${HOST}public/users/${userDetail?.email}/orders/${orderId}`, {
+      const adminUrl = `${HOST}admin/orders/${orderId}`
+      const response = await fetch(isAdmin ? adminUrl : `${HOST}public/users/${userDetail?.email}/orders/${orderId}`, {
         method: "GET",
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -27,7 +30,7 @@ const OrderDetail = () => {
     } catch (error) {
       toast.error(error)
     }
-  }, [orderId, token, userDetail?.email])
+  }, [isAdmin, orderId, token, userDetail?.email])
   useEffect(() => {
     getOrderDetail();
   }, [getOrderDetail]);

@@ -23,7 +23,7 @@ import ProductDetails from "./pages/ProductDetails/ProductDetails";
 import Shop from "./pages/Shop/Shop";
 import Payment from "./pages/payment/Payment";
 import MyOrders from "./pages/MyOrders/MyOrders";
-import OrderDetail from "./pages/OederDetail/OrderDetail";
+import OrderDetail from "./pages/OrderDetail/OrderDetail";
 import AdminOrder from "./pages/Admin/Orders/AdminOrder";
 
 const Layout = () => {

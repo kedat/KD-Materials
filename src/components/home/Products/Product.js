@@ -32,7 +32,6 @@ const Product = (props) => {
 
   const handleClickAddToCart = useCallback(async () => {
     if (userDetail?.cart) {
-
       try {
         const response = await fetch(`${HOST}public/carts/${userDetail?.cart?.cartId}/products/${props._id}/quantity/1`, {
           method: "POST",
@@ -61,7 +60,6 @@ const Product = (props) => {
           await dispatch(updateCart(result?.products))
           toast.success("Added to card")
         }
-
       } catch (error) {
         toast.error(error)
       }

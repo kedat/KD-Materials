@@ -1,4 +1,4 @@
-import { isEmpty, map } from "lodash";
+import { add, isEmpty, map } from "lodash";
 import React, { useCallback, useEffect, useState } from "react";
 import Slider from "react-slick";
 import { toast } from "react-toastify";
@@ -51,14 +51,13 @@ const NewArrivals = () => {
       });
       const result = await response.json();
       setProducts(result.content)
-
     } catch (error) {
       toast.error(error)
     }
   }, [])
 
   useEffect(() => {
-    getProducts()
+    getProducts();
   }, [getProducts])
 
   return (

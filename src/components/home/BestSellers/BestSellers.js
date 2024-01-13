@@ -77,6 +77,8 @@ const BestSellers = () => {
                     color="Black"
                     des={product.description}
                     cat="Best"
+                    discount={product.discount}
+                    specialPrice={product.specialPrice}
                   />
                 </div>
               </>
